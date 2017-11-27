@@ -1,0 +1,14 @@
+sudo: required
+language: node_js
+node_js:
+  - node
+services:
+  - docker
+script:
+  - ng build -prod
+  - docker build -t registry.heroku.com/jhist/web .
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+    docker push registry.heroku.com/jhist/web;
+    fi
